@@ -24,3 +24,5 @@ def printKey(key):
 keypad.registerKeyPressHandler(printKey)
 
 print("Press a key")
+while True:
+    time.sleep(0.2)

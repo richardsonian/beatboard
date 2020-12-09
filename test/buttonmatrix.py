@@ -5,7 +5,7 @@ import digitalio
 import board
 import adafruit_matrixkeypad
     
-rows = [digitalio.DigitalInOut(x) for x in (board.D26, board.D20, board.D21)]
+rows = [digitalio.DigitalInOut(x) for x in (board.D14, board.D15, board.D18)]
 cols = [digitalio.DigitalInOut(x) for x in (board.D5, board.D6, board.D13, board.D19, board.D26)]
     
 # 3x4 matrix keypad on Raspberry Pi -
@@ -16,7 +16,9 @@ cols = [digitalio.DigitalInOut(x) for x in (board.D5, board.D6, board.D13, board
 keys = (("V/I", "V/ii", "V/iii", "V/IV", "V/V"), ("IM7", "iihdim7", "iii7", "IV7", "V7"), ("I", "ii", "iii", "IV", "V"))
     
 keypad = adafruit_matrixkeypad.Matrix_Keypad(rows, cols, keys)
-    
+
+print("Press a key:")
+
 while True:
     keys = keypad.pressed_keys
     if keys:

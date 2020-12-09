@@ -21,6 +21,10 @@ def printKey(key):
 # printKey will be called each time a keypad button is pressed
 keypad.registerKeyPressHandler(printKey)
 
-print("Press a key")
+print("Press a key (type exit to stop)")
+
 while True:
+    code = input()
+    if code == "exit":
+        break
     time.sleep(0.2)

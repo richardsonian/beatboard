@@ -8,8 +8,8 @@ num_cols = 7
 
 KEYPAD = [[(r, c) for c in range(1, num_cols + 1)] for r in range(1, num_rows + 1)]
 
-ROW_PINS = [2, 3, 4] # BCM numbering
-COL_PINS = [17, 0, 5, 6, 13, 19, 26] # BCM numbering
+ROW_PINS = [16, 20, 21] # BCM numbering
+COL_PINS = [12, 0, 5, 6, 13, 19, 26] # BCM numbering
 
 factory = rpi_gpio.KeypadFactory()
 
@@ -26,5 +26,6 @@ print("Press a key (type exit to stop)")
 while True:
     code = input()
     if code == "exit":
+        keypad.cleanup() # Cleanup GPIO
         break
     time.sleep(0.2)

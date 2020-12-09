@@ -5,8 +5,8 @@ import digitalio
 import board
 import adafruit_matrixkeypad
     
-cols = [digitalio.DigitalInOut(x) for x in (board.D26, board.D20, board.D21)]
-rows = [digitalio.DigitalInOut(x) for x in (board.D5, board.D6, board.D13, board.D19, board.D26)]
+rows = [digitalio.DigitalInOut(x) for x in (board.D26, board.D20, board.D21)]
+cols = [digitalio.DigitalInOut(x) for x in (board.D5, board.D6, board.D13, board.D19, board.D26)]
     
 # 3x4 matrix keypad on Raspberry Pi -
 # rows and columns are mixed up for https://www.adafruit.com/product/3845

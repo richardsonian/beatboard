@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 from pad4pi import rpi_gpio
+import time
 
 KEYPAD = [
     [1, 2, 3, 4, 5],

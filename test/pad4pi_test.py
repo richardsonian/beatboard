@@ -6,7 +6,7 @@ import time
 num_rows = 3
 num_cols = 7
 
-KEYPAD = [[(r, c) for c in range(1, num_cols + 1)] for r in range(1, num_rows + 1)]
+KEYPAD = [[(r, c) for c in range(0, num_cols)] for r in range(0, num_rows)]
 
 ROW_PINS = [16, 20, 21] # BCM numbering
 COL_PINS = [12, 0, 5, 6, 13, 19, 26] # BCM numbering

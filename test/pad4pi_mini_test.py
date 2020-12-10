@@ -8,8 +8,8 @@ num_cols = 2
 
 KEYPAD = [[(r, c) for c in range(1, num_cols + 1)] for r in range(1, num_rows + 1)]
 
-ROW_PINS = [13, 6] # BCM numbering
-COL_PINS = [26, 19] # BCM numbering
+COL_PINS = [13, 6] # BCM numbering
+ROW_PINS = [26, 19] # BCM numbering
 
 factory = rpi_gpio.KeypadFactory()
 

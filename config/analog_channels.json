@@ -1,0 +1,42 @@
+{
+    "knob_0": {
+        "pin": 0,
+        "min": 65472,
+        "max": 0
+    },
+    "knob_1": {
+        "pin": 1,
+        "min": 65472,
+        "max": 0
+    },
+    "knob_2": {
+        "pin": 2,
+        "min": 65472,
+        "max": 0
+    },
+    "knob_3": {
+        "pin": 3,
+        "min": 65472,
+        "max": 0
+    },
+    "knob_4": {
+        "pin": 4,
+        "min": 65472,
+        "max": 0
+    },
+    "slider": {
+        "pin": 5,
+        "min": 0,
+        "max": 65472
+    },
+    "joystick_x": {
+        "pin": 6,
+        "min": 0,
+        "max": 65472
+    },
+    "joystick_y": {
+        "pin": 7,
+        "min": 0,
+        "max": 65472
+    }
+}

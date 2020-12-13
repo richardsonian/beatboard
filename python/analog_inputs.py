@@ -45,7 +45,7 @@ class AnalogReader:
                 # Start callback in new thread so that our reading isn't blocked
                 thread_name = name + "_callback"
                 arguments = (name, scaled_val)
-                print("debug: About to start thread: {} with args: {}".format(thread_name, arguemnts))
+                print("debug: About to start thread: {} with args: {}".format(thread_name, arguments))
                 Thread(target=self._callbacks[name], name=thread_name, args=arguments).start()
                 
 

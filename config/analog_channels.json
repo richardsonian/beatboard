@@ -31,12 +31,12 @@
     },
     "joystick_x": {
         "pin": 6,
-        "min": 0,
-        "max": 65472
+        "min": 65472,
+        "max": 0
     },
     "joystick_y": {
         "pin": 7,
-        "min": 0,
-        "max": 65472
+        "min": 65472,
+        "max": 0
     }
 }

@@ -71,7 +71,7 @@ class Joystick:
 
     def processChange(self, axis_name, value):
         print("processing joystick movement ({}: {})".format(axis_name, value))
-        if (value >= self.threshold) and (value <= (1 - self.threshold)):
+        if (value >= self.threshold) or (value <= (1 - self.threshold)):
             print("{} past threshold! (val:{})".format(axis_name, value))
             if self._repeat_timer is None:
                 # Find the right callback for the direction moved

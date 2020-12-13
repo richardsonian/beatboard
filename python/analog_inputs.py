@@ -70,19 +70,25 @@ class Joystick:
         GPIO.add_event_detect(clickPin, GPIO.RISING, callback=self.onClick, bouncetime=clickDebounce)
 
     def processChange(self, axis_name, value):
+        print("processing joystick movement ({}: {})".format(axis_name, value))
         if (value >= self.threshold) and (value <= (1 - self.threshold)):
+            print("{} past threshold! (val:{})".format(axis_name, value))
             if self._repeat_timer is None:
                 # Find the right callback for the direction moved
                 if axis_name == "joystick_x":
                     if value >= self.threshold:
                         callback = self.onRight
+                        print("Sending right push callback")
                     elif value <= (1 - self.threshold):
                         callback = self.onLeft
+                        print("Sending left push callback")
                 elif axis_name == "joystick_y":
                     if value >= self.threshold:
                         callback = self.onUp
+                        print("Sending up push callback")
                     elif value <= (1 - self.threshold):
                         callback = self.onDown
+                        print("Sending down push callback")
                 
                 # call it once
                 Thread(target=callback, name=axis_name + "_callback", args=()).start()

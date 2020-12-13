@@ -5,6 +5,7 @@ import busio
 import digitalio
 import board
 from pad4pi import rpi_gpio
+import RPi.GPIO as GPIO
 # Software
 import json
 # Local

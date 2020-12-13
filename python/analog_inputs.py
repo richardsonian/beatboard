@@ -91,7 +91,7 @@ class Joystick:
                 self._repeat_timer.start()
 
         elif self._repeat_timer is not None:
-                self._repeat_timer.cancel()
+                self._repeat_timer.stop()
                 self._repeat_timer = None
                 
 

@@ -43,29 +43,3 @@ class Interval(object):
             self._timer.cancel() 
         self.running = False 
         self._timer  = None
-
-
-if __name__ == "__main__":
-    import time 
-    import random
-    
-    def clock(start):
-        """
-        Prints out the elapsed time when called from start.
-        """
-        print "elapsed: {:0.3f} seconds".format(
-            time.time() - start
-        )
-
-    # Create an interval. 
-    interval = Interval(random.randint(1,3), clock, args=[time.time(),])
-    print "Starting Interval, press CTRL+C to stop."
-    interval.start() 
-
-    while True:
-        try:
-            time.sleep(0.1)
-        except KeyboardInterrupt:
-            print "Shutting down interval ..."
-            interval.stop()
-            break

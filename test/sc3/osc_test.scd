@@ -1,6 +1,8 @@
 // Stolen from http://www.ctandersonmusic.com/2018/01/26/SC-on-RPi/
 s.latency = 0.05;
 s.waitForBoot{
+  "sc_lang listening on: ".postln;
+    NetAddr.localAddr.postln;
 
     // the example synth that will be controlled. note the standardized arguments: amp, freq, trig
     SynthDef( \sin, { | amp = 0.0, freq = 440, out = 0, trig = 0 |

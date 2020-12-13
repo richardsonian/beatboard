@@ -15,7 +15,7 @@ from screens import Menu
 menu = Menu()
 
 # ~~~~~ Initialize Joystick ~~~~~~ #
-joystick_click_pin = board.D26
+joystick_click_pin = 26
 joystick = Joystick(joystick_click_pin, menu.up, menu.down, menu.left, menu.right, menu.select)
 # listeners for joystick X and Y pots set w/ AnalogReader callbacks
 

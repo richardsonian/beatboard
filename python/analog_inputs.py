@@ -44,8 +44,10 @@ class AnalogReader:
 
                 # Start callback in new thread so that our reading isn't blocked
                 thread_name = name + "_callback"
-                callback_thread = Thread(target=self._callbacks[name], name=thread_name, args=(name, scaled_val))
-                callback_thread.start()
+                arguments = (name, scaled_val)
+                print("debug: About to start thread: {} with args: {}".format(thread_name, arguemnts))
+                Thread(target=self._callbacks[name], name=thread_name, args=arguments).start()
+                
 
 class Joystick:
     DEFAULT_REPEAT_DELAY = 0.4 # seconds

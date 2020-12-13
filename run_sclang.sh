@@ -5,4 +5,4 @@ FILE=$(readlink -f $1)
 export QT_QPA_PLATFORM=offscreen
 cd /home/pi/supercolliderStandaloneRPI1
 echo "Executing sc3 script: ${FILE}"
-./sclang -a -l ~/supercolliderStandaloneRPI1/sclang.yaml $FILE
+./sclang -u 57120 -a -l ~/supercolliderStandaloneRPI1/sclang.yaml $FILE

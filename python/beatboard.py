@@ -8,6 +8,7 @@ from pad4pi import rpi_gpio
 import RPi.GPIO as GPIO
 # Software
 import json
+import time
 # Local
 from analog_inputs import AnalogReader, Joystick
 from screens import Menu
@@ -72,3 +73,4 @@ while True:
     if code == "exit":
         keypad.cleanup()
         GPIO.cleanup()
+    time.sleep(0.1)

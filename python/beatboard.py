@@ -40,7 +40,8 @@ keypad.registerKeyPressHandler(printKey) # fill in callback
 adc_cs_pin = board.D8
 
 # Load channel config
-with open("../config/analog_channels.json") as json_file:
+analog_config_path = "/home/pi/beatboard/config/analog_channels.json"
+with open(analog_config_path) as json_file:
     channel_info = json.load(json_file)
 
 # Get DAC serial bus

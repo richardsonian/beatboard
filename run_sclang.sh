@@ -4,5 +4,5 @@ FILE=$(readlink -f $1)
 pkill aplay
 export QT_QPA_PLATFORM=offscreen
 cd ~/supercolliderStandaloneRPI1
-echo $("Executing sc3 script: "$FILE)
+echo "Executing sc3 script: ${FILE}"
 ./sclang -a -l ~/supercolliderStandaloneRPI1/sclang.yaml $FILE

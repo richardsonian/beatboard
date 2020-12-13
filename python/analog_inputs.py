@@ -6,6 +6,7 @@ import adafruit_mcp3xxx.mcp3008 as MCP
 from adafruit_mcp3xxx.analog_in import AnalogIn
 import time
 from threading import Timer, Thread
+from interval import Interval
 
 class AnalogReader:
 
@@ -24,7 +25,7 @@ class AnalogReader:
         
         self._delta = delta
         print("Starting timer in AnalogReader __init__")
-        self._timer = Timer(frequency, self._read)
+        self._timer = Interval(frequency, self._read)
         self._timer.start()
      
     def registerCallback(self, channel_name, callback):
@@ -86,7 +87,7 @@ class Joystick:
                 # call it once
                 Thread(target=callback, name=axis_name + "_callback", args=()).start()
                 # set repeat timer
-                self._repeat_timer = Timer(self.repeat_delay, callback)
+                self._repeat_timer = Interval(self.repeat_delay, callback)
                 self._repeat_timer.start()
 
         elif self._repeat_timer is not None:

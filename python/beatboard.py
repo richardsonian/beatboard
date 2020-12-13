@@ -73,4 +73,4 @@ while True:
     if code == "exit":
         keypad.cleanup()
         GPIO.cleanup()
-    time.sleep(0.1)
+        break

@@ -63,3 +63,11 @@ analog.registerCallback("slider", printPotVal)
 
 
 # ~~~~ Initialize Supercollider server ~~~~ #
+
+
+# Main loop
+while True:
+    code = input()
+    if code == "exit":
+        keypad.cleanup()
+        GPIO.cleanup()

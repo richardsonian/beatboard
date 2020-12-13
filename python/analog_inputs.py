@@ -11,7 +11,7 @@ from interval import Interval
 class AnalogReader:
 
     DEFAULT_READ_FREQ = 0.25
-    DEFAULT_TRIGGER_DELTA = 10
+    DEFAULT_TRIGGER_DELTA = 200
 
     def __init__(self, spi, cs_pin, channel_info, frequency=DEFAULT_READ_FREQ, delta=DEFAULT_TRIGGER_DELTA):
         cs = digitalio.DigitalInOut(cs_pin)

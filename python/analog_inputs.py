@@ -9,7 +9,7 @@ from threading import Timer, Thread
 
 class AnalogReader:
 
-    DEFAULT_READ_FREQ = 0.1
+    DEFAULT_READ_FREQ = 0.25
     DEFAULT_TRIGGER_DELTA = 10
 
     def __init__(self, spi, cs_pin, channel_info, frequency=DEFAULT_READ_FREQ, delta=DEFAULT_TRIGGER_DELTA):

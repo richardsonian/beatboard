@@ -24,7 +24,7 @@ class AnalogReader:
         self._callbacks = {name:None for name in channel_info.keys()}
         
         self._delta = delta
-        print("Starting timer in AnalogReader __init__")
+        # print("Starting timer in AnalogReader __init__")
         self._timer = Interval(frequency, self._read)
         self._timer.start()
      
@@ -35,7 +35,7 @@ class AnalogReader:
         del self._callbacks[channel_name]
 
     def _read(self):
-        print("reading analog pins!")
+        # print("reading analog pins!")
         for (name, channel) in self._channels.items():
             val = channel.value
             if abs(self._old_values[name] - val) >= self._delta:

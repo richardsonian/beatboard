@@ -33,7 +33,7 @@ class AnalogReader:
         del self._callbacks[channel_name]
 
     def _read(self):
-        for (name, channel) in self._channels:
+        for (name, channel) in self._channels.items():
             val = channel.value
             if abs(self._old_values[name] - val) >= self._delta:
                 # Update the old value

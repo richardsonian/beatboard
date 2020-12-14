@@ -75,7 +75,7 @@ s.doWhenBooted({
   }).add;
 
   //Adapted from sccode.org: https://sccode.org/1-4YY
-  SynthDef(\bass, { |out=0, freq = 220|
+  SynthDef(\bass, { |out=0, freq = 220, amp = 1|
     var subfreq = freq / 2;
 
     // Envelopes
@@ -117,6 +117,9 @@ s.doWhenBooted({
 
     // Another resonant LPF
     sig = MoogFF.ar(sig, XLine.ar(freq*150, freq*30, 0.1), 0.1);
+
+    //Final attenuation
+    sig = MulAdd(sig, amp);
 
     Out.ar(out, sig);
   }).add;
@@ -185,7 +188,8 @@ s.doWhenBooted({
     \scale, Scale.major,
     \degree, ~bassNotes,
     \octave, ~bassOctaves,
-    \dur, ~bassDurs
+    \dur, ~bassDurs,
+    \amp, 1
   ), inf);
 
  /*~~~~~~~~~~~~~~Control!~~~~~~~~~~~~~~~~~~~~~*/

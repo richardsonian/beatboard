@@ -17,6 +17,7 @@ s.doWhenBooted({
     // distortion helps glue everything together and acts as a compressor
     snd = (snd * 1.4).tanh;
     snd = Pan2.ar(snd, \pan.kr(0), \amp.kr(0.1));
+
     Out.ar(0, snd);
   }).add;
 
@@ -29,7 +30,7 @@ s.doWhenBooted({
     Out.ar(out, Pan2.ar(snd, pan));
   }).add;
 
-  SynthDef(\snare, {arg out = 0, amp = 0.1, sinfreq = 180, att = 0.01, rel = 0.2, ffreq = 2000, pan = 0;
+  SynthDef(\snare, {arg out = 0, amp = 0.3, sinfreq = 180, att = 0.01, rel = 0.2, ffreq = 2000, pan = 0;
     var env, snd1, snd2, sum;
     env = Env.perc(att, rel, amp).kr(doneAction: 2);
     snd1 = HPF.ar(
@@ -140,13 +141,14 @@ s.doWhenBooted({
 
   ~hhRandPattern = Pbind(
     \instrument, \hihat,
-    \amp, 0.1,
-    \dur, Pn(~hhRandMeasure, inf)
+    \dur, Pn(~hhRandMeasure, inf),
+    \amp, Pdefn(\hihatAmp, 0.5)
   );
 
   ~hh16Pattern = Pbind(
     \instrument, \hihat,
-    \dur, Pn(Pseq([0.25], 16), inf)
+    \dur, Pn(Pseq([0.25], 16), inf),
+    \amp, Pdefn(\hihatAmp, 0.5)
   );
 
   //----kick----//
@@ -156,12 +158,14 @@ s.doWhenBooted({
 
   ~kick1Pattern = Pbind(
     \instrument, \kick_808,
-    \dur, Pseq(~kick1Measure, inf)
+    \dur, Pseq(~kick1Measure, inf),
+    \amp, Pdefn(\kickAmp, 1)
   );
 
   ~kick2Pattern = Pbind(
     \instrument, \kick_808,
-    \dur, Pseq(~kick2Measure, inf)
+    \dur, Pseq(~kick2Measure, inf),
+    \amp, Pdefn(\kickAmp, 1)
   );
 
   //----Snare----//
@@ -171,11 +175,13 @@ s.doWhenBooted({
   ~sn1Pattern = Pbind(
     \instrument, \snare,
     \dur, Pseq(~snMeasure, inf),
+    \amp, Pdefn(\snareAmp, 0.3)
   );
 
   ~sn2Pattern = Pbind(
     \instrument, \neurosnare,
     \dur, Pseq(~snMeasure, inf),
+    \amp, Pdefn(\snareAmp, 0.3)
   );
 
   //--Bass--//
@@ -189,7 +195,7 @@ s.doWhenBooted({
     \degree, ~bassNotes,
     \octave, ~bassOctaves,
     \dur, ~bassDurs,
-    \amp, 1
+    \amp, Pdefn(\bassAmp, 0.9)
   ), inf);
 
  /*~~~~~~~~~~~~~~Control!~~~~~~~~~~~~~~~~~~~~~*/
@@ -204,12 +210,16 @@ s.doWhenBooted({
       1, {
         "setting kick to pattern 1".postln;
         ~kickStream.stop;
-        ~kickStream = ~kick1Pattern.play(quant: 4)
+        ~kickStream = ~kick1Pattern.play(quant: 4);
       },
       2, {
         "setting kick to pattern 2".postln;
         ~kickStream.stop;
-        ~kickStream = ~kick2Pattern.play(quant: 4)
+        ~kickStream = ~kick2Pattern.play(quant: 4);
+      },
+      '/amp', {
+        ("setting kick amp to" + msg[2]).postln;
+        Pdefn(\kickAmp, msg[2]);
       }
     );
   }, '/kick');
@@ -218,11 +228,15 @@ s.doWhenBooted({
     switch(msg[1],
       1, {
         ~snStream.stop;
-        ~snStream = ~sn1Pattern.play(quant: 4)
+        ~snStream = ~sn1Pattern.play(quant: 4);
       },
       2, {
         ~snStream.stop;
-        ~snStream = ~sn2Pattern.play(quant: 4)
+        ~snStream = ~sn2Pattern.play(quant: 4);
+      },
+      '/amp', {
+        ("setting snare amp to" + msg[2]).postln;
+        Pdefn(\snareAmp, msg[2]);
       }
     );
   }, '/snare');
@@ -231,11 +245,15 @@ s.doWhenBooted({
     switch(msg[1],
       1, {
         ~hhStream.stop;
-        ~hhStream = ~hhRandPattern.play(quant: 4)
+        ~hhStream = ~hhRandPattern.play(quant: 4);
       },
       2, {
         ~hhStream.stop;
-        ~hhStream = ~hh16Pattern.play(quant: 4)
+        ~hhStream = ~hh16Pattern.play(quant: 4);
+      },
+      '/amp', {
+        ("setting hihat amp to" + msg[2]).postln;
+        Pdefn(\hihatAmp, msg[2]);
       }
     );
   }, '/hihat');
@@ -295,6 +313,10 @@ s.doWhenBooted({
             ~bassOctaves.source = Pseq([3, 3, 4], 4); //same ^
           }
         );
+      },
+      '/amp', {
+        ("setting bass amp to" + msg[2]).postln;
+        Pdefn(\bassAmp, msg[2]);
       },
       '/start', {
         ~bassStream = ~bassPattern.play(quant:4);

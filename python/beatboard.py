@@ -12,6 +12,7 @@ import time
 # Local
 from analog_inputs import AnalogReader, Joystick
 from screens import Menu
+import
 
 # ~~~~~ Initialize Menu ~~~~~~ #
 menu = Menu()
@@ -65,9 +66,12 @@ analog.registerCallback("slider", printPotVal)
 
 
 # ~~~~ Initialize Supercollider server ~~~~ #
+sclang_ip = "localhost"
+sclang_port = 57120
 
+SC = supercollider.SuperCollider(sclang_ip, sclang_port)
 
-# Main loop
+# Main loop ** This block does not work as intended **
 while True:
     code = input()
     if code == "exit":

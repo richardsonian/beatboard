@@ -1,6 +1,7 @@
 s.boot;
 s.doWhenBooted({
   /*~~~~~~~~~~SynthDefs~~~~~~~~~~*/
+  //These should definitely be saved to files...
 
   //From sccode.org: https://sccode.org/1-57f
   SynthDef(\neurosnare, {
@@ -41,17 +42,19 @@ s.doWhenBooted({
     Out.ar(out, Pan2.ar(sum, pan));
   }).add;
 
-  SynthDef(\kick, {arg out = 0, amp = 0.3, sinfreq = 60, glissf = 0.9, att = 0.01, rel = 0.45, pan = 0;
-    var env, snd, ramp;
-    env = Env.perc(att, rel, amp).kr(doneAction: 2);
-    ramp = XLine.kr(
-      start: sinfreq,
-      end: sinfreq * glissf,
-      dur: rel
-    );
-    snd = SinOsc.ar(freq: ramp, mul: env);
-    snd = Pan2.ar(snd, pan);
-    Out.ar(out, snd);
+  SynthDef(\kick_808, {arg out = 0, freq1 = 240, freq2 = 60, amp = 1, ringTime = 10, rel = 1, dist = 0.5, pan = 0;
+    var snd, env;
+	  snd = Ringz.ar(
+		  in: Impulse.ar(0), // single impulse
+		  freq: XLine.ar(freq1, freq2, 0.1),
+		  decaytime: ringTime);
+	  env = EnvGen.ar(Env.perc(0.001, rel, amp), doneAction: 2);
+	  snd = (1.0 - dist) * snd + (dist * (snd.distort));
+	  snd = snd * env;
+	  Out.ar(0, Pan2.ar(snd, pan));
+    //
+    //By Bruno Ruviaro
+    //https://github.com/brunoruviaro/SynthDefs-for-Patterns/blob/master/kick808.scd
   }).add;
 
   // Basic saw synth for chords and bass **UNUSED**
@@ -149,12 +152,12 @@ s.doWhenBooted({
   ~kick2Measure = [0.75, 0.25, Rest(0.5), 0.5, Rest(0.5), 0.5, Rest(0.5), 0.5];
 
   ~kick1Pattern = Pbind(
-    \instrument, \kick,
+    \instrument, \kick_808,
     \dur, Pseq(~kick1Measure, inf)
   );
 
   ~kick2Pattern = Pbind(
-    \instrument, \kick,
+    \instrument, \kick_808,
     \dur, Pseq(~kick2Measure, inf)
   );
 
@@ -171,6 +174,19 @@ s.doWhenBooted({
     \instrument, \neurosnare,
     \dur, Pseq(~snMeasure, inf),
   );
+
+  //--Bass--//
+  PatternProxy.defaultQuant = 1; //Use more pattern proxies!!
+  ~bassNotes = PatternProxy(Pseq([0, 0], 4));
+  ~bassOctaves = PatternProxy(Pseq([3, 4], 4));
+  ~bassDurs = PatternProxy(Pseq([0.5, 0.5], 4));
+  ~bassPattern = Pn(Pbind(
+    \instrument, \bass,
+    \scale, Scale.major,
+    \degree, ~bassNotes,
+    \octave, ~bassOctaves,
+    \dur, ~bassDurs
+  ), inf);
 
  /*~~~~~~~~~~~~~~Control!~~~~~~~~~~~~~~~~~~~~~*/
   OSCdef(\tempo, {|msg, time, addr, recvPort|
@@ -220,22 +236,14 @@ s.doWhenBooted({
     );
   }, '/hihat');
 
-  OSCdef(\bass, {|msg, time, addr, recvPort|
-
-  }, '/bass');
-
-  OSCdef(\pad, {|msg, time, addr, recvPort|
-
-  }, '/pad');
-
   OSCdef(\drums, {|msg, time, addr, recvPort|
     msg[1].postln;
     switch(msg[1],
       '/start', {
         "start drums".postln;
-        ~hhStream = ~hh16Pattern.play(quant:0);
-        ~snStream = ~sn1Pattern.play(quant:0);
-        ~kickStream = ~kick1Pattern.play(quant:0);
+        ~hhStream = ~hh16Pattern.play(quant:4);
+        ~snStream = ~sn1Pattern.play(quant:4);
+        ~kickStream = ~kick1Pattern.play(quant:4);
       },
       '/stop', {
         "stop drums".postln;
@@ -245,8 +253,57 @@ s.doWhenBooted({
       }
     )
   }, '/drums');
+
+  OSCdef(\bass, {|msg, time, addr, recvPort| //addr, numargs, args
+    msg.postln;
+    switch(msg[1],
+      '/note', { //using ugly hard code here for now until I can jank together a way to send an array over OSC
+        switch(~bassDurs.source.list.size, //this is literally the ugliest hack ever omg please stop i want to die
+          2, { //Coressponding to pattern 1
+            ~bassNotes.source = Pseq([msg[2], msg[3]], 4);
+          },
+          3, { //corresponding to pattern 3
+            ~bassNotes.source = Pseq([msg[2], msg[3], msg[4]], 4);
+          },
+          4, { //corresponding to pattern 2
+            ~bassNotes.source = Pseq([msg[2], msg[3], msg[4], msg[5]], 1);
+          }
+        )
+      },
+      '/octave', {
+        ~bassOctaves.source = Pseq([msg[2], msg[3]], 4);
+      },
+      '/pattern', { //rhythm pattern: 1, 2, or 3 //eventually figure out dynamic way of sending pattern (probably through passing aray)
+        switch(msg[2],
+          1, {
+            ~bassDurs.source = Pseq([0.5, 0.5], 4); //The pattern to set to
+            ~bassNotes.source = Pseq([0, 0], 4); //set a default that will work with this rhythm
+            ~bassOctaves.source = Pseq([3, 4], 4); //same ^
+          },
+          2, {
+            ~bassDurs.source = Pseq([1, 1, 0.5, 1.5], 1); //The pattern to set to
+            ~bassNotes.source = Pseq([0, 0, 0, 0], 1); //set a default that will work with this rhythm
+            ~bassOctaves.source = Pseq([3, 3, 4, 3], 1); //same ^
+          },
+          3, {
+            ~bassDurs.source = Pseq([1/3, 1/3, 1/3], 4); //The pattern to set to
+            ~bassNotes.source = Pseq([0, 4, 0], 4); //set a default that will work with this rhythm
+            ~bassOctaves.source = Pseq([3, 3, 4], 4); //same ^
+          }
+        );
+      },
+      '/start', {
+        ~bassStream = ~bassPattern.play(quant:4);
+      },
+      '/stop', {
+        ~bassStream.stop;
+      }
+    );
+  }, '/bass');
+
+  /*
+  OSCdef(\pad, {|msg, time, addr, recvPort|
+  }, '/pad');
+  */
 });
-
-NetAddr.localAddr.sendMsg("/kick", 2)
-
 

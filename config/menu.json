@@ -19,7 +19,7 @@
         "off": ["/bass", "/stop"],
         "on": ["/bass", "/start"]
     },
-    "bass_pattern": {
+    "bass_patt": {
         "8ths": ["/bass", "/pattern", 1],
         "triplet": ["/bass", "/pattern", 2]
     }

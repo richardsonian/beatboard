@@ -72,7 +72,7 @@ class Menu:
             if item == self._current_item:
                 text = "-{}: < {} >".format(item, self._menu_state[item])
             else:
-                text = "{}: {}".format((item, self._menu_state[item]))
+                text = "{}: {}".format(item, self._menu_state[item])
             
             (text_width, text_height) = font.getsize(text)
 

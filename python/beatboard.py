@@ -57,10 +57,11 @@ button_names = [[(r, c) for c in range(0, matrix_cols)] for r in range(0, matrix
 factory = rpi_gpio.KeypadFactory()
 keypad = factory.create_keypad(keypad=button_names, row_pins=row_pins, col_pins=col_pins)
 
-def printKey(key): #temp
+# Debug
+def printKey(key):
     print(key)
 
-keypad.registerKeyPressHandler(printKey) # fill in callback
+keypad.registerKeyPressHandler(SC.handleButtonPress) # fill in callback
 
 # ~~~~~ Initialize Analog Reader ~~~~~~ #
 adc_cs_pin = board.D8

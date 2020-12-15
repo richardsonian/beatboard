@@ -50,7 +50,7 @@ class AnalogReader:
                 scaled_val = scale(val, self._channel_info[name]["min"], self._channel_info[name]["max"], 0, 1)
 
                 # Start callback in new thread so that our reading isn't blocked
-                Thread(target=self._callbacks[name], name=name + "_callback", args=(scaled_val)).start()
+                Thread(target=self._callbacks[name], name=name + "_callback", args=(name, scaled_val)).start()
                 
 
 class Joystick:

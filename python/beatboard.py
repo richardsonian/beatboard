@@ -83,11 +83,11 @@ def printPotVal(name, val):
 # Register callbacks
 analog.registerCallback("joystick_x", joystick.processChange)
 analog.registerCallback("joystick_y", joystick.processChange)
-analog.registerCallback("knob_0", partial(SC.sendMsg, "/hihat", "/amp"))
-analog.registerCallback("knob_1", partial(SC.sendMsg, "/snare", "/amp"))
-analog.registerCallback("knob_2", partial(SC.sendMsg, "/kick", "/amp"))
-analog.registerCallback("knob_3", partial(SC.sendMsg, "/bass", "/amp"))
-analog.registerCallback("knob_4", SC.setTempo)
+analog.registerCallback("knob_0", (lambda _, val : SC.sendMsg("/hihat", "/amp", val)))
+analog.registerCallback("knob_1", (lambda _, val : SC.sendMsg("/snare", "/amp", val)))
+analog.registerCallback("knob_2", (lambda _, val : SC.sendMsg("/kick", "/amp", val)))
+analog.registerCallback("knob_3", (lambda _, val : SC.sendMsg("/bass", "/amp", val)))
+analog.registerCallback("knob_4", (lambda _, val : SC.setTempo(val)))
 analog.registerCallback("slider", printPotVal)
 
 # Main loop & Exit cleanup

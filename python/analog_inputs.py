@@ -7,6 +7,7 @@ from adafruit_mcp3xxx.analog_in import AnalogIn
 import time
 from threading import Timer, Thread
 from interval import Interval
+from util import scale
 
 class AnalogReader:
 

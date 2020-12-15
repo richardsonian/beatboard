@@ -1,6 +1,7 @@
 import board
 import digitalio
 from PIL import Image, ImageDraw, ImageFont
+from util import get_list_neighbor, clamp
 
 class Menu:
     def __init__(self, SC, screen, menu_items):
@@ -101,12 +102,3 @@ class Menu:
     def clear(self):
         self.screen.fill(0)
         self.screen.show()
-
-def get_list_neighbor(item, list_, shift, wrap):
-    if wrap:
-        return list_[(list_.index(item) + shift) % len(list_)]
-    else:
-        return list_[clamp(list_.index(item) + shift, 0, len(list_) - 1)]
-
-def clamp(num, min_, max_): #inclusive
-    return max(min_, min(num, max_))

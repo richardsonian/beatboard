@@ -46,10 +46,10 @@ class AnalogReader:
                 self._old_values[name] = val
 
                 # Normalize the value
-                scaled_val = _scale(val, self._channel_info[name]["min"], self._channel_info[name]["max"], 0, 1)
+                scaled_val = scale(val, self._channel_info[name]["min"], self._channel_info[name]["max"], 0, 1)
 
                 # Start callback in new thread so that our reading isn't blocked
-                Thread(target=self._callbacks[name], name=name + "_callback", args=(name, scaled_val)).start()
+                Thread(target=self._callbacks[name], name=name + "_callback", args=(scaled_val)).start()
                 
 
 class Joystick:
@@ -102,15 +102,6 @@ class Joystick:
         elif self._repeat_timer is not None:
                 self._repeat_timer.stop()
                 self._repeat_timer = None
-                
-
-
-# ~~~~~ Helper functions ~~~~~ #
-def _scale(num, oldMin, oldMax, newMin, newMax):
-        return (((num - oldMin) * (newMax - newMin)) / (oldMax - oldMin)) + newMin
-
-def _millis():
-    return time.time() * 1000
 
                 
     

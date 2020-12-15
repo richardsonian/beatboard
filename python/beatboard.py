@@ -10,6 +10,7 @@ from adafruit_ssd1306 import SSD1306_I2C as OLED
 # Software
 import json
 import time
+from functools import partial
 # Local
 from analog_inputs import AnalogReader, Joystick
 from screens import Menu
@@ -75,15 +76,18 @@ spi = board.SPI()
 # Create reader object
 analog = AnalogReader(spi, adc_cs_pin, channel_info)
 
-#temp
+# Debug
 def printPotVal(name, val):
     print("Analog change: ({}: {})".format(name, val))
 
 # Register callbacks
 analog.registerCallback("joystick_x", joystick.processChange)
 analog.registerCallback("joystick_y", joystick.processChange)
-for i in range (5):
-    analog.registerCallback("knob_{}".format(i), printPotVal)
+analog.registerCallback("knob_0", partial(SC.sendMsg, "/hihat", "/amp"))
+analog.registerCallback("knob_1", partial(SC.sendMsg, "/snare", "/amp"))
+analog.registerCallback("knob_2", partial(SC.sendMsg, "/kick", "/amp"))
+analog.registerCallback("knob_3", partial(SC.sendMsg, "/bass", "/amp"))
+analog.registerCallback("knob_4", SC.setTempo)
 analog.registerCallback("slider", printPotVal)
 
 # Main loop & Exit cleanup

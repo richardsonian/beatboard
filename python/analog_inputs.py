@@ -73,7 +73,8 @@ class Joystick:
         GPIO.add_event_detect(clickPin, GPIO.FALLING, callback=self.onClick, bouncetime=clickDebounce)
 
     def deinit(self):
-        self._repeat_timer.stop()
+        if self._repeat_timer is not None:
+            self._repeat_timer.stop()
 
     def processChange(self, axis_name, value):
         #print("processing joystick movement ({}: {})".format(axis_name, value))

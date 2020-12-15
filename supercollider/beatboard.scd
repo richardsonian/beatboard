@@ -128,7 +128,7 @@ s.doWhenBooted({
   /* ~~~~~~~~~~ Patterns! ~~~~~~~~~~~~~~ */
 
   //----hihat----//
-
+  Pdefn(\hihatAmp, 0.5);
   ~hhRandBeats = [
     Pseq([Rest(0.5), 0.25, 0.25]),
     Pseq([0.25, 0.25, Rest(0.5)]),
@@ -142,51 +142,54 @@ s.doWhenBooted({
   ~hhRandPattern = Pbind(
     \instrument, \hihat,
     \dur, Pn(~hhRandMeasure, inf),
-    \amp, Pdefn(\hihatAmp, 0.5)
+    \amp, Pdefn(\hihatAmp)
   );
 
   ~hh16Pattern = Pbind(
     \instrument, \hihat,
     \dur, Pn(Pseq([0.25], 16), inf),
-    \amp, Pdefn(\hihatAmp, 0.5)
+    \amp, Pdefn(\hihatAmp)
   );
 
   //----kick----//
-
+  Pdefn(\kickAmp, 1);
   ~kick1Measure = [1, 1, 1, 1];
   ~kick2Measure = [0.75, 0.25, Rest(0.5), 0.5, Rest(0.5), 0.5, Rest(0.5), 0.5];
 
   ~kick1Pattern = Pbind(
     \instrument, \kick_808,
     \dur, Pseq(~kick1Measure, inf),
-    \amp, Pdefn(\kickAmp, 1)
+    \amp, Pdefn(\kickAmp)
   );
 
   ~kick2Pattern = Pbind(
     \instrument, \kick_808,
     \dur, Pseq(~kick2Measure, inf),
-    \amp, Pdefn(\kickAmp, 1)
+    \amp, Pdefn(\kickAmp)
   );
 
   //----Snare----//
+  Pdefn(\snareAmp, 0.7);
 
   ~snMeasure = [Rest(1), 1, Rest(1), 1];
 
   ~sn1Pattern = Pbind(
     \instrument, \snare,
     \dur, Pseq(~snMeasure, inf),
-    \amp, Pdefn(\snareAmp, 0.3)
+    \amp, Pdefn(\snareAmp)
   );
 
   ~sn2Pattern = Pbind(
     \instrument, \neurosnare,
     \dur, Pseq(~snMeasure, inf),
-    \amp, Pdefn(\snareAmp, 0.3)
+    \amp, Pdefn(\snareAmp)
   );
 
   //--Bass--//
   PatternProxy.defaultQuant = 1; //Use more pattern proxies!!
-  ~bassNotes = PatternProxy(Pseq([0, 0], 4));
+  Pdefn(\bassRoot, 0);
+  Pdefn(\bassAmp, 0.9);
+  ~bassNotes = PatternProxy(Pseq([Pdefn(\bassRoot), Pdefn(\bassRoot)], 4));
   ~bassOctaves = PatternProxy(Pseq([3, 4], 4));
   ~bassDurs = PatternProxy(Pseq([0.5, 0.5], 4));
   ~bassPattern = Pn(Pbind(
@@ -195,7 +198,7 @@ s.doWhenBooted({
     \degree, ~bassNotes,
     \octave, ~bassOctaves,
     \dur, ~bassDurs,
-    \amp, Pdefn(\bassAmp, 0.9)
+    \amp, Pdefn(\bassAmp)
   ), inf);
 
  /*~~~~~~~~~~~~~~Control!~~~~~~~~~~~~~~~~~~~~~*/
@@ -279,37 +282,19 @@ s.doWhenBooted({
   OSCdef(\bass, {|msg, time, addr, recvPort| //addr, numargs, args
     msg.postln;
     switch(msg[1],
-      '/note', { //using ugly hard code here for now until I can jank together a way to send an array over OSC
-        switch(~bassDurs.source.list.size, //this is literally the ugliest hack ever omg please stop i want to die
-          2, { //Coressponding to pattern 1
-            ~bassNotes.source = Pseq([msg[2], msg[3]], 4);
-          },
-          3, { //corresponding to pattern 3
-            ~bassNotes.source = Pseq([msg[2], msg[3], msg[4]], 4);
-          },
-          4, { //corresponding to pattern 2
-            ~bassNotes.source = Pseq([msg[2], msg[3], msg[4], msg[5]], 1);
-          }
-        )
+      '/root', { //using ugly hard code here for now until I can jank together a way to send an array over OSC
+        Pdefn(\bassRoot, msg[2]);
       },
-      '/octave', {
-        ~bassOctaves.source = Pseq([msg[2], msg[3]], 4);
-      },
-      '/pattern', { //rhythm pattern: 1, 2, or 3 //eventually figure out dynamic way of sending pattern (probably through passing aray)
+      '/pattern', {
         switch(msg[2],
           1, {
             ~bassDurs.source = Pseq([0.5, 0.5], 4); //The pattern to set to
-            ~bassNotes.source = Pseq([0, 0], 4); //set a default that will work with this rhythm
-            ~bassOctaves.source = Pseq([3, 4], 4); //same ^
+            ~bassNotes.source = Pseq([Pdefn(\bassRoot), Pdefn(\bassRoot)], 4); //set a default that will work with this rhythm
+            ~bassOctaves.source = Pseq([3, 4], 4);
           },
           2, {
-            ~bassDurs.source = Pseq([1, 1, 0.5, 1.5], 1); //The pattern to set to
-            ~bassNotes.source = Pseq([0, 0, 0, 0], 1); //set a default that will work with this rhythm
-            ~bassOctaves.source = Pseq([3, 3, 4, 3], 1); //same ^
-          },
-          3, {
             ~bassDurs.source = Pseq([1/3, 1/3, 1/3], 4); //The pattern to set to
-            ~bassNotes.source = Pseq([0, 4, 0], 4); //set a default that will work with this rhythm
+            ~bassNotes.source = Pseq([Pdefn(\bassRoot), (Pdefn(\bassRoot) + 4) % 7, Pdefn(\bassRoot)], 4); //set a default that will work with this rhythm
             ~bassOctaves.source = Pseq([3, 3, 4], 4); //same ^
           }
         );

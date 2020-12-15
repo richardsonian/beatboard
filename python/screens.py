@@ -73,7 +73,7 @@ class Menu:
         items = list(self._menu_state.keys())
         current_index = items.index(self._current_item)
         display_start_index = clamp(current_index, 0, len(items) - NUM_ITEMS)
-        display_end_index = min(current_index + NUM_ITEMS - 1, len(items))
+        display_end_index = min(current_index + NUM_ITEMS, len(items))
 
         items_to_show = items[display_start_index:display_end_index]
 

@@ -6,30 +6,52 @@ import digitalio
 import board
 from pad4pi import rpi_gpio
 import RPi.GPIO as GPIO
+import adafruit_ssd1306.SSD1306_I2C as OLED
 # Software
 import json
 import time
 # Local
 from analog_inputs import AnalogReader, Joystick
 from screens import Menu
-import
+from supercollider import SuperCollider
+
+# ~~~~ Initialize Supercollider Object ~~~~ #
+sclang_ip = "192.168.1.36" # talk to sclang on laptop, bc pi is too slow to process
+sclang_port = 57120
+
+SC = SuperCollider(sclang_ip, sclang_port)
 
 # ~~~~~ Initialize Menu ~~~~~~ #
-menu = Menu()
+big_screen_width = 128
+big_screen_height = 64
+big_screen_i2c_addr = 0x3d
+menu_config_path = "/home/pi/beatboard/config/menu.json"
+
+# Load menu config
+with open(menu_config_path) as json_file:
+    menu_items = json.load(json_file)
+
+# init screen
+big_screen = OLED(big_screen_width, big_screen_height, board.I2C(), addr=big_screen_i2c_addr)
+
+# create menu object
+menu = Menu(SC, big_screen, menu_items)
 
 # ~~~~~ Initialize Joystick ~~~~~~ #
 joystick_click_pin = 26
+
 joystick = Joystick(joystick_click_pin, menu.up, menu.down, menu.left, menu.right, menu.select)
-# listeners for joystick X and Y pots set w/ AnalogReader callbacks
+
+# NOTE: listeners for joystick X and Y pots set w/ AnalogReader callbacks
 
 # ~~~~~ Initialize Button Matrix ~~~~~~ #
 matrix_rows = 3
 matrix_cols = 7
 
-button_names = [[(r, c) for c in range(0, matrix_cols)] for r in range(0, matrix_rows)]
-
 row_pins = [23, 24, 25] # BCM numbering
 col_pins = [4, 17, 27, 22, 5, 6, 13]
+
+button_names = [[(r, c) for c in range(0, matrix_cols)] for r in range(0, matrix_rows)]
 
 factory = rpi_gpio.KeypadFactory()
 keypad = factory.create_keypad(keypad=button_names, row_pins=row_pins, col_pins=col_pins)
@@ -47,7 +69,7 @@ analog_config_path = "/home/pi/beatboard/config/analog_channels.json"
 with open(analog_config_path) as json_file:
     channel_info = json.load(json_file)
 
-# Get DAC serial bus
+# Get ADC serial bus
 spi = board.SPI()
 
 # Create reader object
@@ -64,14 +86,7 @@ for i in range (5):
     analog.registerCallback("knob_{}".format(i), printPotVal)
 analog.registerCallback("slider", printPotVal)
 
-
-# ~~~~ Initialize Supercollider server ~~~~ #
-sclang_ip = "localhost"
-sclang_port = 57120
-
-SC = supercollider.SuperCollider(sclang_ip, sclang_port)
-
-# Main loop ** This block does not work as intended **
+# Main loop & Exit condition ** This block does not work as intended **
 while True:
     code = input()
     if code == "exit":

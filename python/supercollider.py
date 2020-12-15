@@ -2,12 +2,20 @@ import os
 import subprocess
 import liblo
 
-DEFAULT_SERVER_IP = "localhost"
-DEFAULT_SERVER_PORT = 57120
+class SuperCollider:
+    def __init__(self, ip, port):
+        self.ip = ip
+        self.port = port
 
-def startServer(ip=DEFAULT_SERVER_IP, port=DEFAULT_SERVER_PORT):
-    subprocess.call("~/beatboard/run_sclang.sh")
+    def sendMsg(self, *msg):
+        liblo.send((self.ip, self.port), *msg)
+    
+    def setTempo(self, tempo):
+        self.sendMsg("/tempo", tempo)
+    
+    def setVolume(self, target, amp):
+        self.sendMsg(target, amp)
 
-def sendMsg(ip, port, path, msg):
-    liblo.send((ip, port), path, msg)
+    def setChordRoot(self, root):
+        self.sendMsg("/bass", "/root", root)
 

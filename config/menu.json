@@ -1,0 +1,26 @@
+{
+    "drums": {
+        "off": ["/drums", "stop"],
+        "on": ["/drums", "/start"]
+    },
+    "snare": {
+        "default": ["/snare", 1],
+        "neurosnare": ["/snare", 2]
+    },
+    "hihat": {
+        "16th notes": ["/hihat", 2],
+        "random": ["/hihat", 1]
+    },
+    "kick": {
+        "simple": ["/kick", 1],
+        "fancy": ["/kick", 2]
+    },
+    "bass": {
+        "off": ["/bass", "/stop"],
+        "on": ["/bass", "start"]
+    },
+    "bass_pattern": {
+        "8th note": ["/bass", "/pattern", 1],
+        "triplet": ["/bass", "/pattern", 2]
+    }
+}

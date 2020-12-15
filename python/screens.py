@@ -2,8 +2,6 @@ import board
 import digitalio
 from PIL import Image, ImageDraw, ImageFont
 
-ITEM_SPACING = 0 #pixels
-
 class Menu:
     def __init__(self, SC, screen, menu_items):
         self.SC = SC
@@ -17,19 +15,19 @@ class Menu:
 
     def up(self):
         print("menu up")
-        self._current_item = _get_list_neighbor(self._current_item, list(self._menu_items.keys()), shift=-1, wrap=False)
+        self._current_item = get_list_neighbor(self._current_item, list(self._menu_items.keys()), shift=-1, wrap=False)
         self.draw()
     
     def down(self):
         print("menu down")
-        self._current_item = _get_list_neighbor(self._current_item, list(self._menu_items.keys()), shift=1, wrap=False)
+        self._current_item = get_list_neighbor(self._current_item, list(self._menu_items.keys()), shift=1, wrap=False)
         self.draw()
     
     def left(self):
         print("menu left")
         
         current_state = self._menu_state[self._current_item] #find the current state of this menu item
-        new_state = _get_list_neighbor(current_state, list(self._menu_items[self._current_item].keys()), shift=-1, wrap=True) #find the new one we should shift to
+        new_state = get_list_neighbor(current_state, list(self._menu_items[self._current_item].keys()), shift=-1, wrap=True) #find the new one we should shift to
         self._menu_state[self._current_item] = new_state # update the menu state
         
         # Send the new state to supercollider
@@ -41,7 +39,7 @@ class Menu:
     def right(self):
         print("menu right")
         current_state = self._menu_state[self._current_item] #find the current state of this menu item
-        new_state = _get_list_neighbor(current_state, list(self._menu_items[self._current_item].keys()), shift=1, wrap=True) #find the new one we should shift to
+        new_state = get_list_neighbor(current_state, list(self._menu_items[self._current_item].keys()), shift=1, wrap=True) #find the new one we should shift to
         self._menu_state[self._current_item] = new_state # update the menu state
         
         # Send the new state to supercollider
@@ -65,16 +63,27 @@ class Menu:
         font = ImageFont.load_default()
 
         # Draw the menu
+        ITEM_SPACING = 2 #pixels
+        NUM_ITEMS = 5 # that can fit at once
+
         x = 1
         y = 1
 
-        for item in self._menu_state.keys():
+        # find the sublist that we're going to draw
+        items = list(self._menu_state.keys())
+        current_index = items.index(self._current_item)
+        display_start_index = clamp(current_index, 0, len(items) - NUM_ITEMS)
+        display_end_index = min(current_index + NUM_ITEMS - 1, len(items))
+
+        items_to_show = items[display_start_index:display_end_index]
+
+        for item in items_to_show:
             if item == self._current_item:
                 text = "-{}: < {} >".format(item, self._menu_state[item])
             else:
                 text = "{}: {}".format(item, self._menu_state[item])
             
-            (text_width, text_height) = font.getsize(text)
+            (_, text_height) = font.getsize(text)
 
             draw.text(
                 (x, y),
@@ -93,8 +102,11 @@ class Menu:
         self.screen.fill(0)
         self.screen.show()
 
-def _get_list_neighbor(item, list_, shift, wrap):
+def get_list_neighbor(item, list_, shift, wrap):
     if wrap:
         return list_[(list_.index(item) + shift) % len(list_)]
     else:
-        return list_[max(0, min(list_.index(item) + shift, len(list_) - 1))]
+        return list_[clamp(list_.index(item) + shift, 0, len(list_) - 1)]
+
+def clamp(num, min_, max_): #inclusive
+    return max(min_, min(num, max_))

@@ -2,7 +2,7 @@ import board
 import digitalio
 from PIL import Image, ImageDraw, ImageFont
 
-ITEM_SPACING = 2 #pixels
+ITEM_SPACING = 0 #pixels
 
 class Menu:
     def __init__(self, SC, screen, menu_items):

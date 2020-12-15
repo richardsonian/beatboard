@@ -6,7 +6,7 @@ import digitalio
 import board
 from pad4pi import rpi_gpio
 import RPi.GPIO as GPIO
-import adafruit_ssd1306.SSD1306_I2C as OLED
+from adafruit_ssd1306 import SSD1306_I2C as OLED
 # Software
 import json
 import time

@@ -86,10 +86,13 @@ for i in range (5):
     analog.registerCallback("knob_{}".format(i), printPotVal)
 analog.registerCallback("slider", printPotVal)
 
-# Main loop & Exit condition ** This block does not work as intended **
+# Main loop & Exit cleanup
 while True:
     code = input()
     if code == "exit":
         keypad.cleanup()
         GPIO.cleanup()
+        analog.deinit()
+        joystick.deinit()
+        menu.clear()
         break

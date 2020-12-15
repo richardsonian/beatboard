@@ -27,6 +27,9 @@ class AnalogReader:
         # print("Starting timer in AnalogReader __init__")
         self._timer = Interval(frequency, self._read)
         self._timer.start()
+
+    def deinit(self):
+        self._timer.stop()
      
     def registerCallback(self, channel_name, callback):
         self._callbacks[channel_name] = callback
@@ -68,6 +71,9 @@ class Joystick:
         # Init click
         GPIO.setup(clickPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.add_event_detect(clickPin, GPIO.FALLING, callback=self.onClick, bouncetime=clickDebounce)
+
+    def deinit(self):
+        self._repeat_timer.stop()
 
     def processChange(self, axis_name, value):
         #print("processing joystick movement ({}: {})".format(axis_name, value))
